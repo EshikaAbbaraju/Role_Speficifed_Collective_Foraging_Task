@@ -257,6 +257,7 @@
       repetitions = 6,
       roundsPerRep = 10,
 
+      enableObservationPhase = true,
       observationRoundsPerDemo = 5,
 
       modelMoveMs = 900,
@@ -1964,7 +1965,7 @@ async function initAndRun() {
   window.addEventListener("keydown", onKeyDown);
 
   // collect all map CSVs we intend to use
-  const obsList = (MAP_LISTS && Array.isArray(MAP_LISTS.obs)) ? MAP_LISTS.obs : [];
+  const obsList = (enableObservationPhase && MAP_LISTS && Array.isArray(MAP_LISTS.obs)) ? MAP_LISTS.obs : [];
   const mainList = (MAP_LISTS && Array.isArray(MAP_LISTS.main)) ? MAP_LISTS.main : [];
   const uniqueCsvs = [...new Set([...obsList, ...mainList])];
 
@@ -2003,6 +2004,7 @@ async function initAndRun() {
   renderAll();
 
   logSystem("maps_configured", {
+    observation_enabled: enableObservationPhase ? 1 : 0,
     observation_maps: obsList.map(absURL).join("|"),
     main_maps: mainList.map(absURL).join("|"),
     alien_sprite_url: resolvedAlien.url || "",
@@ -2011,31 +2013,35 @@ async function initAndRun() {
     first_map_name: state.mapMeta ? state.mapMeta.name : "",
   });
 
-  // ---- Observation intro instruction ----
-  logSystem("observation_intro_show");
-  await showModal({
-    title: "Next: Observation",
-    html: `
-      <div style="margin-bottom:10px;">
-        You will first <b>watch 3 pairs of agents</b> play the game.
-      </div>
-      <div>
-        Each pair will play <b>${observationRoundsPerDemo} rounds</b>.
-        After watching, you will choose which pair you want to work with.
-      </div>
-    `,
-    buttons: [{ label: "Continue", value: "go" }],
-  });
-  logSystem("observation_intro_ack");
+  if (enableObservationPhase) {
+    // ---- Observation intro instruction ----
+    logSystem("observation_intro_show");
+    await showModal({
+      title: "Next: Observation",
+      html: `
+        <div style="margin-bottom:10px;">
+          You will first <b>watch 3 pairs of agents</b> play the game.
+        </div>
+        <div>
+          Each pair will play <b>${observationRoundsPerDemo} rounds</b>.
+          After watching, you will choose which pair you want to work with.
+        </div>
+      `,
+      buttons: [{ label: "Continue", value: "go" }],
+    });
+    logSystem("observation_intro_ack");
 
-  // ---- Run 3 observation demos (map i) ----
-  for (let i = 0; i < DEMO_PAIRS.length; i++) {
-    const csv =
-      (obsList && obsList[i]) ? obsList[i] :
-      (obsList && obsList[0]) ? obsList[0] :
-      MAP_CSV_URL;
+    // ---- Run 3 observation demos (map i) ----
+    for (let i = 0; i < DEMO_PAIRS.length; i++) {
+      const csv =
+        (obsList && obsList[i]) ? obsList[i] :
+        (obsList && obsList[0]) ? obsList[0] :
+        MAP_CSV_URL;
 
-    await runObservationDemo(DEMO_PAIRS[i], csv, i + 1);
+      await runObservationDemo(DEMO_PAIRS[i], csv, i + 1);
+    }
+  } else {
+    logSystem("observation_skipped");
   }
 
   // ---- Choose a pair ----

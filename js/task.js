@@ -14,6 +14,11 @@
 
   const DEBUG_SKIP_PRACTICE = false;
 
+  // Turn observation phase on/off here.
+  // true  = show observation intro + 3 demo teams
+  // false = skip observation and go directly to team choice
+  const ENABLE_OBSERVATION_PHASE = true;
+
   const $ = (id) => document.getElementById(id);
 
   function requestFullscreenSafe() {
@@ -91,6 +96,7 @@
       roundsPerRep: 10,
 
       // observation config
+      enableObservationPhase: ENABLE_OBSERVATION_PHASE,
       observationRoundsPerDemo: 5,
 
       modelMoveMs: 900,
