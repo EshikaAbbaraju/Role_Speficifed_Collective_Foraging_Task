@@ -1547,12 +1547,12 @@
     function policyForNamedAgent(agentObj) {
       if (!agentObj) return null;
       switch (agentObj.id) {
-        case 1: return universal_policy(role='security',lambda=1);
-        case 2: return policyForagerJerry();
-        case 3: return policySecurityCindy();
-        case 4: return policyForagerFrank();
-        case 5: return policySecurityAlice();
-        case 6: return policyForagerGrace();
+        case 1: return universal_policy(role='security',lambda=1); //security
+        case 2: return policyForagerJerry(); //forager
+        case 3: return policySecurityCindy(); //security
+        case 4: return policyForagerFrank(); //forager
+        case 5: return policySecurityAlice(); //security
+        case 6: return policyForagerGrace(); //forager
         default: return null;
       }
     }

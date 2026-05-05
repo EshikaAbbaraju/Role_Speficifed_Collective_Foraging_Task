@@ -12,7 +12,7 @@
   let game = null;
   let practice = null;
 
-  const DEBUG_SKIP_PRACTICE = false;
+  const DEBUG_SKIP_PRACTICE = true;
 
   // Turn observation phase on/off here.
   // true  = show observation intro + 3 demo teams
